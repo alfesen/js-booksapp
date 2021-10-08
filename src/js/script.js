@@ -33,13 +33,14 @@
       thisBookList.data = dataSource.books;
       thisBookList.favoriteBooks = [];
       thisBookList.filters = [];
+      console.log('thisBookList.favoriteBooks: ', thisBookList.favoriteBooks)
     }
 
     getElements(){
       const thisBookList = this;
 
       thisBookList.bookList = document.querySelector(select.containerOf.bookList);
-      thisBookList.bookImages = document.querySelectorAll(select.containerOf.bookImage);
+      thisBookList.bookImage = document.querySelector(select.containerOf.bookImage);
       thisBookList.filterForm = document.querySelector(select.containerOf.filters);
     }
 
@@ -60,24 +61,27 @@
     initActions(){
       const thisBookList = this;
       
-      for(let book of thisBookList.bookImages){
       
-        book.addEventListener('dblclick', function(event){
+      thisBookList.bookList.addEventListener('dblclick', function(event){
+          console.log('clicked');
           event.preventDefault();
-          const bookId = book.getAttribute('data-id');
-          if(!event.target.offsetParent.classList.contains('favorite')){
-            book.classList.add('favorite');
-            thisBookList.favoriteBooks.push(bookId);
-          } else {
-            book.classList.remove('favorite');
-            const bookIndexOf = thisBookList.favoriteBooks.indexOf(book);
-            thisBookList.favoriteBooks.splice(bookIndexOf, 1);
+          const target = event.target.offsetParent;
+          if(!target.classList.contains(thisBookList.bookImage)){
+            const bookId = target.getAttribute('data-id');
+            if(!thisBookList.favoriteBooks.includes(bookId)){
+              target.classList.add('favorite');
+              thisBookList.favoriteBooks.push(bookId);
+            } else {
+              target.classList.remove('favorite');
+              const bookIndexOf = thisBookList.favoriteBooks.indexOf(bookId);
+              thisBookList.favoriteBooks.splice(bookIndexOf, 1);
+            }
           }
         });
-        book.addEventListener('click', function (event){
+        thisBookList.bookList.addEventListener('click', function (event){
           event.preventDefault();
         });
-      }
+      
       thisBookList.filterForm.addEventListener('click', function (event){
         const target = event.target;
         if(target.tagName == 'INPUT' && target.type == 'checkbox' && target.name == 'filter'){
